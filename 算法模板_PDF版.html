@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>算法模板 - PDF版本</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', 'Microsoft YaHei', monospace;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        @media print {
+            body {
+                padding: 20px;
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #000;
+            border-bottom: 3px solid #333;
+            padding-bottom: 15px;
+        }
+        
+        h2 {
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #000;
+            border-left: 4px solid #0066cc;
+            padding-left: 12px;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #0066cc;
+            page-break-after: avoid;
+        }
+        
+        h4 {
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            page-break-after: avoid;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        pre {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 15px 0;
+            overflow-x: auto;
+            page-break-inside: avoid;
+            line-height: 1.4;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: #333;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: #ddd;
+            margin: 30px 0;
+            page-break-after: avoid;
+        }
+        
+        .language-label {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .cpp { background: #004995; }
+        .js { background: #f7df1e; color: #000; }
+        .ts { background: #2b7a0b; }
+        .python { background: #3776ab; }
+        .go { background: #00add8; }
+        
+        @media print {
+            body {
+                line-height: 1.5;
+            }
+            h2 {
+                page-break-before: auto;
+            }
+            pre {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>算法模板</h1>
+    
+    <div class="section-divider"></div>
+    
+    <h2>核心算法模板</h2>
+    
+    <h3>1. 二分查找法</h3>
+    <p>时间复杂度：O(log n)，适用于有序数组查找</p>
+    
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>class Solution {
+public:
+    int searchInsert(vector&lt;int&gt;& nums, int target) {
+        int n = nums.size();
+        int left = 0;
+        int right = n; // 左闭右开区间 [left, right)
+        while (left &lt; right) {
+            int middle = left + ((right - left) &gt;&gt; 1);
+            if (nums[middle] &gt; target) {
+                right = middle;
+            } else if (nums[middle] &lt; target) {
+                left = middle + 1;
+            } else {
+                return middle;
+            }
+        }
+        return right;
+    }
+};</code></pre>
+    
+    <p><span class="language-label js">JavaScript</span></p>
+    <pre><code>// 左闭右闭区间
+var search = function (nums, target) {
+    let left = 0, right = nums.length - 1;
+    while (left &lt;= right) {
+        let mid = left + Math.floor((right - left)/2);
+        if (nums[mid] &gt; target) {
+            right = mid - 1;
+        } else if (nums[mid] &lt; target) {
+            left = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+    return -1;
+};</code></pre>
+    
+    <p><span class="language-label python">Python</span></p>
+    <pre><code>def binarysearch(nums, target):
+    low = 0
+    high = len(nums) - 1
+    while (low &lt;= high):
+        mid = (high + low)//2
+        if (nums[mid] &lt; target):
+            low = mid + 1
+        if (nums[mid] &gt; target):
+            high = mid - 1
+        if (nums[mid] == target):
+            return mid
+    return -1</code></pre>
+    
+    <h3>2. KMP字符串匹配</h3>
+    <p>时间复杂度：O(n+m)，高效的字符串匹配算法</p>
+    
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>void kmp(int* next, const string& s){
+    next[0] = -1;
+    int j = -1;
+    for(int i = 1; i &lt; s.size(); i++){
+        while (j &gt;= 0 && s[i] != s[j + 1]) {
+            j = next[j];
+        }
+        if (s[i] == s[j + 1]) {
+            j++;
+        }
+        next[i] = j;
+    }
+}</code></pre>
+    
+    <p><span class="language-label js">JavaScript</span></p>
+    <pre><code>var kmp = function (next, s) {
+    next[0] = -1;
+    let j = -1;
+    for(let i = 1; i &lt; s.length; i++){
+        while (j &gt;= 0 && s[i] !== s[j + 1]) {
+            j = next[j];
+        }
+        if (s[i] === s[j + 1]) {
+            j++;
+        }
+        next[i] = j;
+    }
+}</code></pre>
+    
+    <p><span class="language-label python">Python</span></p>
+    <pre><code>def kmp(self, a, s):
+    # a: 数组长度, s: 字符串
+    next = [0]*a
+    j = 0    
+    next[0] = 0
+    for i in range(1, len(s)):
+        while j &gt; 0 and s[j] != s[i]:
+            j = next[j - 1]
+        if s[j] == s[i]:
+            j += 1
+        next[i] = j
+    return next</code></pre>
+    
+    <div class="section-divider"></div>
+    
+    <h2>二叉树遍历</h2>
+    
+    <h3>3. 二叉树数据结构定义</h3>
+    
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};</code></pre>
+    
+    <p><span class="language-label js">JavaScript</span></p>
+    <pre><code>function TreeNode (val, left, right) {
+    this.val = (val === undefined ? 0 : val);
+    this.left = (left === undefined ? null : left);
+    this.right = (right === undefined ? null : right);
+}</code></pre>
+    
+    <p><span class="language-label ts">TypeScript</span></p>
+    <pre><code>class TreeNode {
+    val: number
+    left: TreeNode | null
+    right: TreeNode | null
+    constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+        this.val = (val===undefined ? 0 : val)
+        this.left = (left===undefined ? null : left)
+        this.right = (right===undefined ? null : right)
+    }
+}</code></pre>
+    
+    <h3>4. 深度优先遍历 - 递归</h3>
+    
+    <h4>前序遍历（中左右）</h4>
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>void traversal(TreeNode* cur, vector&lt;int&gt;& vec) {
+    if (cur == NULL) return;
+    vec.push_back(cur-&gt;val);    // 中
+    traversal(cur-&gt;left, vec);  // 左
+    traversal(cur-&gt;right, vec); // 右
+}</code></pre>
+    
+    <h4>中序遍历（左中右）</h4>
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>void traversal(TreeNode* cur, vector&lt;int&gt;& vec) {
+    if (cur == NULL) return;
+    traversal(cur-&gt;left, vec);  // 左
+    vec.push_back(cur-&gt;val);    // 中
+    traversal(cur-&gt;right, vec); // 右
+}</code></pre>
+    
+    <h4>后序遍历（左右中）</h4>
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>void traversal(TreeNode* cur, vector&lt;int&gt;& vec) {
+    if (cur == NULL) return;
+    traversal(cur-&gt;left, vec);  // 左
+    traversal(cur-&gt;right, vec); // 右
+    vec.push_back(cur-&gt;val);    // 中
+}</code></pre>
+    
+    <h3>5. 广度优先遍历 - 层序遍历</h3>
+    
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) {
+    queue&lt;TreeNode*&gt; que;
+    if (root != NULL) que.push(root);
+    vector&lt;vector&lt;int&gt;&gt; result;
+    while (!que.empty()) {
+        int size = que.size();
+        vector&lt;int&gt; vec;
+        for (int i = 0; i &lt; size; i++) {
+            TreeNode* node = que.front();
+            que.pop();
+            vec.push_back(node-&gt;val);
+            if (node-&gt;left) que.push(node-&gt;left);
+            if (node-&gt;right) que.push(node-&gt;right);
+        }
+        result.push_back(vec);
+    }
+    return result;
+}</code></pre>
+    
+    <p><span class="language-label js">JavaScript</span></p>
+    <pre><code>var levelOrder = function (root) {
+    let res = [];
+    if (root === null) return res;
+    let queue = [root];
+    while (queue.length) {
+        let n = queue.length;
+        let temp = [];
+        for (let i = 0; i &lt; n; i++) {
+            let node = queue.shift();
+            temp.push(node.val);
+            node.left && queue.push(node.left);
+            node.right && queue.push(node.right);
+        }
+        res.push(temp);
+    }
+    return res;
+};</code></pre>
+    
+    <h3>6. 二叉树基本操作</h3>
+    
+    <h4>计算树深度</h4>
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>int getDepth(TreeNode* node) {
+    if (node == NULL) return 0;
+    return 1 + max(getDepth(node-&gt;left), getDepth(node-&gt;right));
+}</code></pre>
+    
+    <h4>计算节点数量</h4>
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>int countNodes(TreeNode* root) {
+    if (root == NULL) return 0;
+    return 1 + countNodes(root-&gt;left) + countNodes(root-&gt;right);
+}</code></pre>
+    
+    <div class="section-divider"></div>
+    
+    <h2>高级算法模板</h2>
+    
+    <h3>7. 回溯算法</h3>
+    <p>用于求解排列、组合、子集等问题</p>
+    
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>void backtracking(参数) {
+    if (终止条件) {
+        存放结果;
+        return;
+    }
+    
+    for (选择：本层集合中元素) {
+        处理节点;
+        backtracking(路径，选择列表); // 递归
+        回溯，撤销处理结果
+    }
+}</code></pre>
+    
+    <p><span class="language-label js">JavaScript</span></p>
+    <pre><code>function backtracking(参数) {
+    if (终止条件) {
+        存放结果;
+        return;
+    }
+    
+    for (选择：本层集合中元素) {
+        处理节点;
+        backtracking(路径，选择列表); // 递归
+        回溯，撤销处理结果
+    }
+}</code></pre>
+    
+    <h3>8. 并查集（Union-Find）</h3>
+    <p>用于处理不相交集合的动态连通性问题</p>
+    
+    <p><span class="language-label cpp">C++</span></p>
+    <pre><code>int n = 1005;
+int father[1005];
+
+// 并查集初始化
+void init() {
+    for (int i = 0; i &lt; n; ++i) {
+        father[i] = i;
+    }
+}
+
+// 寻根过程（路径压缩）
+int find(int u) {
+    return u == father[u] ? u : father[u] = find(father[u]);
+}
+
+// 合并两个集合
+void join(int u, int v) {
+    u = find(u);
+    v = find(v);
+    if (u == v) return;
+    father[v] = u;
+}
+
+// 判断是否在同一集合
+bool same(int u, int v) {
+    u = find(u);
+    v = find(v);
+    return u == v;
+}</code></pre>
+    
+    <p><span class="language-label js">JavaScript</span></p>
+    <pre><code>let n = 1005;
+let father = new Array(n).fill(0);
+
+// 并查集初始化
+function init () {
+    for (let i = 0; i &lt; n; ++i) {
+        father[i] = i;
+    }
+}
+
+// 寻根过程
+function find (u) {
+    return u === father[u] ? u : father[u] = find(father[u]);
+}
+
+// 合并集合
+function join(u, v) {
+    u = find(u);
+    v = find(v);
+    if (u === v) return;
+    father[v] = u;
+}
+
+// 判断是否在同一集合
+function same(u, v) {
+    u = find(u);
+    v = find(v);
+    return u === v;
+}</code></pre>
+    
+    <div class="section-divider"></div>
+    
+    <h2>学习资源</h2>
+    <ul>
+        <li><a href="https://www.programmercarl.com/">代码随想录 - 算法教程</a></li>
+        <li><a href="https://github.com/youngyangyang04/leetcode-master">LeetCode Master - 完整题解</a></li>
+        <li><a href="https://www.programmercarl.com/xunlian/xunlianying.html">算法集训营 - 高强度学习计划</a></li>
+    </ul>
+    
+    <div class="section-divider"></div>
+    <p style="text-align: center; color: #999; margin-top: 40px;">
+        本文档为方便打印而生成 | 最后更新：2024年
+    </p>
+</body>
+</html>
